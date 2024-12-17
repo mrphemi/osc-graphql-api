@@ -213,5 +213,3 @@ const collections = [
     ],
   },
 ];
-
-export default { courses, collections };
