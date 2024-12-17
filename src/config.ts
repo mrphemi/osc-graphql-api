@@ -1,8 +1,9 @@
 import "dotenv/config";
 
-export default {
+const config = {
   env: process.env.NODE_ENV || "development",
   port: Number(process.env.PORT || "3000"),
+  jwt_secret: process.env.JWT_SECRET,
   getDbConfig: () => ({
     database: process.env.DB_NAME,
     username: process.env.DB_USERNAME,
@@ -10,3 +11,5 @@ export default {
     host: process.env.DB_HOST,
   }),
 };
+
+export default config;

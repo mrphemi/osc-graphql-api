@@ -1,5 +1,12 @@
+import JWT from "jsonwebtoken";
+
 import Course from "./db/models/Course";
 import Collection from "./db/models/Collection";
+import User from "./db/models/User";
+
+import config from "./config";
+
+import { ForbiddenError, AuthenticationError } from "./utils/error";
 
 const resolvers = {
   Query: {
@@ -53,9 +60,36 @@ const resolvers = {
         console.error("Error fetching collection:", error);
       }
     },
+    async login(_, args: { email: string; password: string }) {
+      try {
+        const user = await User.findOne({
+          where: {
+            email: args.email,
+          },
+        });
+
+        if (!user) throw AuthenticationError();
+
+        const passwordMatches = user.validatePassword(args.password);
+        if (!passwordMatches) throw AuthenticationError();
+
+        const token = JWT.sign(
+          { id: user.id, email: user.email },
+          config.jwt_secret,
+          {
+            expiresIn: "3d",
+          }
+        );
+
+        return token;
+      } catch (error) {
+        console.error("Error login user in:", error);
+      }
+    },
   },
   Mutation: {
-    async addCourse(_, { input }) {
+    async addCourse(_, { input }, ctx) {
+      if (!ctx.user) throw ForbiddenError("Not Allowed");
       try {
         const course = await Course.create({
           ...input,
@@ -66,7 +100,8 @@ const resolvers = {
         console.error("Error creating course:", error);
       }
     },
-    async updateCourse(_, { id, input }) {
+    async updateCourse(_, { id, input }, ctx) {
+      if (!ctx.user) throw ForbiddenError("Not Allowed");
       try {
         const course = await Course.findByPk(id);
 
@@ -84,7 +119,8 @@ const resolvers = {
         console.error("Error updating course:", error);
       }
     },
-    async deleteCourse(_, { id }) {
+    async deleteCourse(_, { id }, ctx) {
+      if (!ctx.user) throw ForbiddenError("Not Allowed");
       try {
         // Find the course first to return it after deletion
         const course = await Course.findByPk(id);
@@ -101,7 +137,8 @@ const resolvers = {
         console.error("Error deleting course:", error);
       }
     },
-    async addCollection(_, { input }) {
+    async addCollection(_, { input }, ctx) {
+      if (!ctx.user) throw ForbiddenError("Not Allowed");
       try {
         const collection = await Collection.create({
           name: input.name,
@@ -126,6 +163,27 @@ const resolvers = {
         return collection;
       } catch (error) {
         console.error("Error creating collection:", error);
+      }
+    },
+    async register(_, { input }, ctx) {
+      if (!ctx.user) throw ForbiddenError("Not Allowed");
+      try {
+        // check if user with email exists
+        const user = await User.findOne({
+          where: {
+            email: input.email,
+          },
+        });
+
+        if (user) throw new Error("User already exists");
+
+        const newUser = await User.create({
+          ...input,
+        });
+
+        return newUser;
+      } catch (error) {
+        console.error("Error creating user:", error);
       }
     },
   },

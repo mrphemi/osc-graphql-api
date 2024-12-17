@@ -31,17 +31,29 @@ const schema = `#graphql
     name: String!
     courseIds: [ID!]
   }
+  type User {
+    id: ID!
+    name: String
+    email: String!
+  }
+  input RegisterInput {
+    name: String
+    email: String!
+    password: String!
+  }
   type Query {
     courses(limit: Int, sortOrder: SortOrder): [Course]
     course(id: ID!): Course
     collections: [Collection]
     collection(id: ID!): Collection
+    login(email: String!, password: String!): String
   }
   type Mutation {
     addCourse(input: CourseInput!): Course!
     updateCourse(id: ID!, input: UpdateCourseInput!): Course!
     deleteCourse(id: ID!): Course!
     addCollection(input: CreateCollectionInput!): Collection!
+    register(input: RegisterInput!): User!
   }
 `;
 
