@@ -165,8 +165,7 @@ const resolvers = {
         console.error("Error creating collection:", error);
       }
     },
-    async register(_, { input }, ctx) {
-      if (!ctx.user) throw ForbiddenError("Not Allowed");
+    async register(_, { input }) {
       try {
         // check if user with email exists
         const user = await User.findOne({
