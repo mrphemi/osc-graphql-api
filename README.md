@@ -63,3 +63,10 @@ Run the following command to spin a dev server:
 ```bash
 npm run dev
 ```
+
+### Possible Improvements
+
+- In depth error handling to handle different types of error gracefully
+- Better typing in resolvers. Probably run codegen script to generate types from the GraphQL schema.
+- Project structure - Colocation of similar resources. For example grouping all queries, resolvers and schemas for Users in one folder.
+- Testing - Write unt tests for different parts of the application.
