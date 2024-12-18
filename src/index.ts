@@ -9,31 +9,37 @@ import db from "./db/connection";
 import schema from "./schema";
 import resolvers from "./resolvers";
 
-db.sync().then(() => {
-  console.log("connected to db");
-});
+async function startServer() {
+  try {
+    // Sync database
+    await db.sync();
+    console.log("Connected to db");
 
-const server = new ApolloServer({
-  typeDefs: schema,
-  resolvers,
-});
+    const server = new ApolloServer({
+      typeDefs: schema,
+      resolvers,
+    });
 
-const { url } = await startStandaloneServer(server, {
-  listen: { port: Number(config.port) },
-  context: async ({ req }) => {
-    // get bearer token with format "Bearer long-token"
-    const bearer = req.headers.authorization || "";
-    // extract just the token
-    const token = bearer.split(" ")[1];
+    const { url } = await startStandaloneServer(server, {
+      listen: { port: Number(config.port) },
+      context: async ({ req }) => {
+        const bearer = req.headers.authorization || "";
+        const token = bearer.split(" ")[1];
 
-    // return jwt payload when valid else return empty obj
-    try {
-      const user = JWT.verify(token, config.jwt_secret);
-      return { user };
-    } catch (error) {
-      return {};
-    }
-  },
-});
+        try {
+          const user = JWT.verify(token, config.jwt_secret);
+          return { user };
+        } catch (error) {
+          return {};
+        }
+      },
+    });
 
-console.log(`🚀 Server ready at ${url}`);
+    console.log(`🚀 Server ready at ${url}`);
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+}
+
+startServer();

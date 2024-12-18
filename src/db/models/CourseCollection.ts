@@ -10,7 +10,7 @@ import Course from "./Course";
 import Collection from "./Collection";
 
 @Table({
-  timestamps: true,
+  timestamps: false,
   tableName: "course_collections",
   modelName: "CourseCollection",
 })
