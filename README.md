@@ -5,7 +5,7 @@
 - [Node.js](https://nodejs.org/en) - JavaScript runtime environment
 - [Apollo Server](https://www.apollographql.com/docs/apollo-server) - GraphQL server
 - [GraphQL](https://graphql.org/) - Query language for APIs
-- [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript
+- [TypeScript](https://www.typescriptlang.org/)
 - [Sequelize](https://sequelize.org/) - TypeScript ORM
 - [SQLite](https://www.sqlite.org/) - SQL database engine
 - [Sequelize TypeScript](https://github.com/sequelize/sequelize-typescript) - TypeScript decorators for Sequelize
