@@ -15,7 +15,7 @@
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
+- Node.js (v22)
 - npm or yarn package manager
 
 ### Installation
